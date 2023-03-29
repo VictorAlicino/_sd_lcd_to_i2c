@@ -3,7 +3,6 @@
 //
 
 #include "NumericRepresentation.h"
-#include <string>
 
 NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
     this->binary = new bool[bit_size];
@@ -18,8 +17,8 @@ NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
     this->binary_string = numeric_representation_to_string(this->binary);
 }
 
-std::string numeric_representation_to_string(uint8_t* binary){
-    std::string binary_string = "";
+String numeric_representation_to_string(uint8_t* binary){
+    String binary_string = "";
     for (int i = 0; i < sizeof(binary); i++) {
         binary_string += binary[i];
     }
