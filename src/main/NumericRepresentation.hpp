@@ -5,6 +5,8 @@
 #ifndef _SD_LCD_TO_I2C_NUMERICREPRESENTATION_H
 #define _SD_LCD_TO_I2C_NUMERICREPRESENTATION_H
 
+#include <Arduino.h>
+
 
 typedef enum number_base {
     BINARY,
@@ -20,25 +22,27 @@ private:
     String binary_string;
     uint8_t decimal;
     uint8_t octal;
-    uint8_t hexadecimal;
+    String hexadecimal;
 
     uint8_t bit_size;
     uint8_t* pins;
 
-    String to_binary(uint8_t value);
-    String to_decimal(uint8_t value);
-    String to_octal(uint8_t value);
-    String to_hexadecimal(uint8_t value);
+    String to_binary();
+    uint8_t to_decimal();
+    uint8_t to_octal();
+    String to_hexadecimal();
 public:
-    NumericRepresentation(uint8_t bit_size, uint8_t* pins);
-    void update(bool force_update);
+    NumericRepresentation(uint8_t bit_size,
+                          uint8_t* pins);
+    bool update(bool force_update);
     String get_value(base type);
-
-    void read_bytes_from_ic();
 
 };
 
-String numeric_representation_to_string(uint8_t* binary);
+bool* read_bytes_from_ic(uint8_t bit_size,
+                        uint8_t* pins);
+
+String numeric_representation_to_string(bool* binary);
 
 
 #endif //_SD_LCD_TO_I2C_NUMERICREPRESENTATION_H

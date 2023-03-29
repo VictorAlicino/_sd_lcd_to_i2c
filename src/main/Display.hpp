@@ -7,14 +7,15 @@
 
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+#include "NumericRepresentation.hpp"
 
 class Display {
 private:
-    LiquidCrystal_I2C display;
+    LiquidCrystal_I2C* display;
 
 public:
     Display();
-    void display_value(uint8_t value, base type);
+    void show_operation(NumericRepresentation opA, NumericRepresentation opB, NumericRepresentation result);
 
 };
 
