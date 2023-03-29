@@ -6,6 +6,7 @@
 
 NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
     this->binary = new bool[bit_size];
+    this->binary_temp = new bool[bit_size];
     this->decimal = 0;
     this->octal = 0;
     this->hexadecimal = "";
@@ -19,39 +20,52 @@ NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
         Serial.println("D" + String(pins[i]) + " set to input");
     }
 
-    this->binary = read_bytes_from_ic(bit_size, pins);
+    read_bytes_from_ic();
 
-    this->binary_string = numeric_representation_to_string(this->binary);
+    for(int i=0; i<bit_size; i++){
+        this->binary[i] = this->binary_temp[i];
+    }
+
+    this->binary_string = numeric_representation_to_string(this->binary, bit_size);
     this->to_decimal();
     this->to_octal();
     this->to_hexadecimal();
+
+    // Print the binary boolean list
+    for(int i = 0; i < bit_size; i++) {
+        Serial.print(this->binary[i]);
+    }Serial.println();
 }
 
-bool NumericRepresentation::update(bool force_update) {
-    bool* temp_binary = read_bytes_from_ic(bit_size, pins);
-    String temp_binary_string = numeric_representation_to_string(temp_binary);
-
-    if (force_update) {
-        this->binary = temp_binary;
-        return true;
+bool NumericRepresentation::is_equal(bool *a, bool *b) {
+    for(int i = 0; i < this->bit_size-1; i++) {
+        if (a[i] != b[i]) {
+            return false;
+        }
     }
+    return true;
+}
 
-    if (this->binary_string != temp_binary_string) {
-        this->binary = temp_binary;
-        this->binary_string = temp_binary_string;
+bool NumericRepresentation::update() {
+    read_bytes_from_ic(); // Update the binary_temp
+    if (!is_equal(this->binary, this->binary_temp)){
+        this->binary_string = numeric_representation_to_string(this->binary, this->bit_size);
         this->to_decimal();
         this->to_octal();
         this->to_hexadecimal();
+        // Update the binary
+        for(int i=0; i<bit_size; i++){
+            this->binary[i] = this->binary_temp[i];
+        }
         return true;
     }
-
     return false;
 }
 
 String NumericRepresentation::get_value(base type) {
     switch (type) {
         case BINARY:
-            return String(this->binary_string);
+            return this->binary_string;
         case DECIMAL:
             return String(this->to_decimal());
         case OCTAL:
@@ -59,7 +73,7 @@ String NumericRepresentation::get_value(base type) {
         case HEXADECIMAL:
             return "0x" + String(this->to_hexadecimal());
         default:
-            return "Invalid Base";
+            return String("Invalid Base");
     }
 }
 
@@ -70,7 +84,7 @@ String NumericRepresentation::to_binary() {
 uint8_t NumericRepresentation::to_decimal() {
     uint8_t decimal = 0;
 
-    for (int i = sizeof(this->binary)/sizeof(this->binary[0])-1; i >= 0; i--) {
+    for (int8_t i = 0; i < bit_size; i++) {
         decimal = (decimal << 1) | this->binary[i];
     }
 
@@ -115,18 +129,15 @@ String NumericRepresentation::to_hexadecimal() {
     return hexadecimal;
 }
 
-bool* read_bytes_from_ic(uint8_t bit_size,
-                        uint8_t* pins) {
-    bool* binary = new bool[bit_size];
+void NumericRepresentation::read_bytes_from_ic() {
     for (int i = 0; i < bit_size; i++) {
-        binary[i] = digitalRead(pins[i]);
+        this->binary_temp[i] = digitalRead(pins[i]);
     }
-    return binary;
 }
 
-String numeric_representation_to_string(bool* binary){
+String numeric_representation_to_string(bool* binary, uint8_t bit_size){
     String binary_string = "";
-    for (int i = 0; i < sizeof(binary); i++) {
+    for (int i = 0; i < bit_size; i++) {
         binary_string += binary[i];
     }
     return binary_string;

@@ -19,6 +19,7 @@ class NumericRepresentation {
 private:
     //
     bool* binary;
+    bool* binary_temp;
     String binary_string;
     uint8_t decimal;
     uint8_t octal;
@@ -31,18 +32,18 @@ private:
     uint8_t to_decimal();
     uint8_t to_octal();
     String to_hexadecimal();
+
+    bool is_equal(bool* a, bool* b);
 public:
     NumericRepresentation(uint8_t bit_size,
                           uint8_t* pins);
-    bool update(bool force_update);
+    bool update();
     String get_value(base type);
+    void read_bytes_from_ic();
 
 };
 
-bool* read_bytes_from_ic(uint8_t bit_size,
-                        uint8_t* pins);
-
-String numeric_representation_to_string(bool* binary);
+String numeric_representation_to_string(bool* binary, uint8_t bit_size);
 
 
 #endif //_SD_LCD_TO_I2C_NUMERICREPRESENTATION_H

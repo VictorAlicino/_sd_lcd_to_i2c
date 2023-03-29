@@ -17,20 +17,25 @@ void setup() {
 
     // Initializing the operands
     uint8_t opA_pins[4] = {2, 3, 4, 5};
-    opA = new NumericRepresentation(8, opA_pins);
-    Serial.println("opA initialized with value: " + opA->get_value(BINARY) + "");
+    opA = new NumericRepresentation(4, opA_pins);
+    Serial.println("opA initialized with values b" + opA->get_value(BINARY) + " | DEC: " + opA->get_value(DECIMAL) + " | OCT: " + opA->get_value(OCTAL) + " | HEX: " + opA->get_value(HEXADECIMAL) + "");
 
     uint8_t opB_pins[4] = {10, 11, 12, 13};
-    opB = new NumericRepresentation(8, opB_pins);
-    Serial.println("opB initialized with value: " + opB->get_value(BINARY) + "");
+    opB = new NumericRepresentation(4, opB_pins);
+    Serial.println("opB initialized with values b" + opB->get_value(BINARY) + " | DEC: " + opB->get_value(DECIMAL) + " | OCT: " + opB->get_value(OCTAL) + " | HEX: " + opB->get_value(HEXADECIMAL) + "");
 
     uint8_t result_pins[8] = {18, 19, 20, 21, 22, 23, 24, 25};
     result = new NumericRepresentation(8, result_pins);
-    Serial.println("result initialized with value: " + result->get_value(BINARY) + "");
+    Serial.println("result initialized with values b" + result->get_value(BINARY) + " | DEC: " + result->get_value(DECIMAL) + " | OCT: " + result->get_value(OCTAL) + " | HEX: " + result->get_value(HEXADECIMAL) + "");
+    display->show_operation(*opA, *opB, *result);
 }
 
 void loop() {
-    if(opA->update(false) || opB->update(false) || result->update(false)){
+    if(opA->update() || opB->update() || result->update()){
         display->show_operation(*opA, *opB, *result);
+        Serial.println("opA initialized with values b" + opA->get_value(BINARY) + " | DEC: " + opA->get_value(DECIMAL) + " | OCT: " + opA->get_value(OCTAL) + " | HEX: " + opA->get_value(HEXADECIMAL) + "");
+        Serial.println("opB initialized with values b" + opB->get_value(BINARY) + " | DEC: " + opB->get_value(DECIMAL) + " | OCT: " + opB->get_value(OCTAL) + " | HEX: " + opB->get_value(HEXADECIMAL) + "");
+        Serial.println("result initialized with values b" + result->get_value(BINARY) + " | DEC: " + result->get_value(DECIMAL) + " | OCT: " + result->get_value(OCTAL) + " | HEX: " + result->get_value(HEXADECIMAL) + "");
+        Serial.println("--------------------------------------------------");
     }
 }
