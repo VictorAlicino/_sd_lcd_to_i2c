@@ -22,20 +22,22 @@ private:
     bool* binary_temp;
     String binary_string;
     uint8_t decimal;
+    uint16_t decimal16_t;
     uint8_t octal;
     String hexadecimal;
 
-    uint8_t bit_size;
+    int bit_size;
     uint8_t* pins;
 
     String to_binary();
-    uint8_t to_decimal();
+    uint8_t to_decimal8_t();
+    uint16_t to_decimal16_t();
     uint8_t to_octal();
     String to_hexadecimal();
 
     bool is_equal(bool* a, bool* b);
 public:
-    NumericRepresentation(uint8_t bit_size,
+    NumericRepresentation(int bit_size,
                           uint8_t* pins);
     bool update();
     String get_value(base type);

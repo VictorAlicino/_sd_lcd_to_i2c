@@ -4,10 +4,11 @@
 
 #include "NumericRepresentation.hpp"
 
-NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
+NumericRepresentation::NumericRepresentation(int bit_size, uint8_t* pins) {
     this->binary = new bool[bit_size];
     this->binary_temp = new bool[bit_size];
     this->decimal = 0;
+    this->decimal16_t = 0;
     this->octal = 0;
     this->hexadecimal = "";
 
@@ -27,7 +28,7 @@ NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
     }
 
     this->binary_string = numeric_representation_to_string(this->binary, bit_size);
-    this->to_decimal();
+    this->bit_size <= 4 ? this->decimal = to_decimal8_t() : this->decimal16_t = to_decimal16_t();
     this->to_octal();
     this->to_hexadecimal();
 
@@ -38,7 +39,7 @@ NumericRepresentation::NumericRepresentation(uint8_t bit_size, uint8_t* pins) {
 }
 
 bool NumericRepresentation::is_equal(bool *a, bool *b) {
-    for(int i = 0; i < this->bit_size-1; i++) {
+    for(int i = 0; i < this->bit_size; i++) {
         if (a[i] != b[i]) {
             return false;
         }
@@ -49,8 +50,8 @@ bool NumericRepresentation::is_equal(bool *a, bool *b) {
 bool NumericRepresentation::update() {
     read_bytes_from_ic(); // Update the binary_temp
     if (!is_equal(this->binary, this->binary_temp)){
-        this->binary_string = numeric_representation_to_string(this->binary, this->bit_size);
-        this->to_decimal();
+        this->binary_string = numeric_representation_to_string(this->binary_temp, this->bit_size);
+        this->bit_size <= 4 ? this->decimal = to_decimal8_t() : this->decimal16_t = to_decimal16_t();
         this->to_octal();
         this->to_hexadecimal();
         // Update the binary
@@ -67,7 +68,8 @@ String NumericRepresentation::get_value(base type) {
         case BINARY:
             return this->binary_string;
         case DECIMAL:
-            return String(this->to_decimal());
+            if(this->bit_size <= 4) return String(this->to_decimal8_t());
+            else return String(this->to_decimal16_t());
         case OCTAL:
             return String(this->to_octal());
         case HEXADECIMAL:
@@ -81,14 +83,25 @@ String NumericRepresentation::to_binary() {
     return this->binary_string;
 }
 
-uint8_t NumericRepresentation::to_decimal() {
+uint8_t NumericRepresentation::to_decimal8_t() {
     uint8_t decimal = 0;
 
     for (int8_t i = 0; i < bit_size; i++) {
-        decimal = (decimal << 1) | this->binary[i];
+        decimal = (decimal << 1) | this->binary_temp[i];
     }
 
     this->decimal = decimal;
+    return decimal;
+}
+
+uint16_t NumericRepresentation::to_decimal16_t() {
+    uint16_t decimal = 0;
+
+    for (int16_t i = 0; i < bit_size; i++) {
+        decimal = (decimal << 1) | this->binary_temp[i];
+    }
+
+    this->decimal16_t = decimal;
     return decimal;
 }
 
@@ -109,7 +122,11 @@ uint8_t NumericRepresentation::to_octal() {
 
 String NumericRepresentation::to_hexadecimal() {
     String hexadecimal = "";
-    uint8_t decimal = this->decimal;
+    if (this->bit_size <= 4){
+        decimal = this->decimal;
+    } else {
+        decimal = this->decimal16_t;
+    }
 
     while (decimal > 0) {
         int remainder = decimal % 16;
@@ -130,9 +147,11 @@ String NumericRepresentation::to_hexadecimal() {
 }
 
 void NumericRepresentation::read_bytes_from_ic() {
+    Serial.print("Reading bytes: ");
     for (int i = 0; i < bit_size; i++) {
         this->binary_temp[i] = digitalRead(pins[i]);
-    }
+        Serial.print(digitalRead(pins[i]));
+    }Serial.println();
 }
 
 String numeric_representation_to_string(bool* binary, uint8_t bit_size){

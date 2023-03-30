@@ -16,15 +16,15 @@ void setup() {
     display = new Display();
 
     // Initializing the operands
-    uint8_t opA_pins[4] = {2, 3, 4, 5};
+    uint8_t opA_pins[4] = {13, 12, 11, 10};
     opA = new NumericRepresentation(4, opA_pins);
     Serial.println("opA initialized with values b" + opA->get_value(BINARY) + " | DEC: " + opA->get_value(DECIMAL) + " | OCT: " + opA->get_value(OCTAL) + " | HEX: " + opA->get_value(HEXADECIMAL) + "");
 
-    uint8_t opB_pins[4] = {10, 11, 12, 13};
+    uint8_t opB_pins[4] = {5,4, 3, 2};
     opB = new NumericRepresentation(4, opB_pins);
     Serial.println("opB initialized with values b" + opB->get_value(BINARY) + " | DEC: " + opB->get_value(DECIMAL) + " | OCT: " + opB->get_value(OCTAL) + " | HEX: " + opB->get_value(HEXADECIMAL) + "");
 
-    uint8_t result_pins[8] = {18, 19, 20, 21, 22, 23, 24, 25};
+    uint8_t result_pins[8] = {14, 15, 16, 17, 18, 19, 22, 23};
     result = new NumericRepresentation(8, result_pins);
     Serial.println("result initialized with values b" + result->get_value(BINARY) + " | DEC: " + result->get_value(DECIMAL) + " | OCT: " + result->get_value(OCTAL) + " | HEX: " + result->get_value(HEXADECIMAL) + "");
     display->show_operation(*opA, *opB, *result);
@@ -37,5 +37,8 @@ void loop() {
         Serial.println("opB initialized with values b" + opB->get_value(BINARY) + " | DEC: " + opB->get_value(DECIMAL) + " | OCT: " + opB->get_value(OCTAL) + " | HEX: " + opB->get_value(HEXADECIMAL) + "");
         Serial.println("result initialized with values b" + result->get_value(BINARY) + " | DEC: " + result->get_value(DECIMAL) + " | OCT: " + result->get_value(OCTAL) + " | HEX: " + result->get_value(HEXADECIMAL) + "");
         Serial.println("--------------------------------------------------");
-    }
+    }/*
+    if(result->update()){
+        display->show_operation(*opA, *opB, *result);
+    }*/
 }
