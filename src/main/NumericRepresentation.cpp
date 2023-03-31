@@ -4,7 +4,7 @@
 
 #include "NumericRepresentation.hpp"
 
-NumericRepresentation::NumericRepresentation(int bit_size, uint8_t* pins) {
+NumericRepresentation::NumericRepresentation(int bit_size, int* pins) {
     this->binary = new bool[bit_size];
     this->binary_temp = new bool[bit_size];
     this->decimal = 0;
@@ -13,7 +13,11 @@ NumericRepresentation::NumericRepresentation(int bit_size, uint8_t* pins) {
     this->hexadecimal = "";
 
     this->bit_size = bit_size;
-    this->pins = pins;
+    this->pins = new int[bit_size];
+
+    for(int i=0; i<bit_size; i++){
+        this->pins[i] = pins[i];
+    }
 
     // Set the pins direction to inputs
     for (int i = 0; i < bit_size; i++) {
@@ -49,12 +53,15 @@ bool NumericRepresentation::is_equal(bool *a, bool *b) {
 
 bool NumericRepresentation::update() {
     read_bytes_from_ic(); // Update the binary_temp
+
     if (!is_equal(this->binary, this->binary_temp)){
         this->binary_string = numeric_representation_to_string(this->binary_temp, this->bit_size);
         this->bit_size <= 4 ? this->decimal = to_decimal8_t() : this->decimal16_t = to_decimal16_t();
         this->to_octal();
         this->to_hexadecimal();
         // Update the binary
+        delete[] this->binary;
+        this->binary = new bool[this->bit_size];
         for(int i=0; i<bit_size; i++){
             this->binary[i] = this->binary_temp[i];
         }
@@ -147,11 +154,9 @@ String NumericRepresentation::to_hexadecimal() {
 }
 
 void NumericRepresentation::read_bytes_from_ic() {
-    Serial.print("Reading bytes: ");
-    for (int i = 0; i < bit_size; i++) {
+    for (int i = 0; i < this->bit_size; i++) {
         this->binary_temp[i] = digitalRead(pins[i]);
-        Serial.print(digitalRead(pins[i]));
-    }Serial.println();
+    }
 }
 
 String numeric_representation_to_string(bool* binary, uint8_t bit_size){

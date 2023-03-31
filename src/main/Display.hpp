@@ -16,6 +16,7 @@ private:
 public:
     Display();
     void show_operation(NumericRepresentation opA, NumericRepresentation opB, NumericRepresentation result);
+    void show_result(NumericRepresentation result);
 
 };
 

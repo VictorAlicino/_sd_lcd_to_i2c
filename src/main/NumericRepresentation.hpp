@@ -27,7 +27,7 @@ private:
     String hexadecimal;
 
     int bit_size;
-    uint8_t* pins;
+    int* pins;
 
     String to_binary();
     uint8_t to_decimal8_t();
@@ -38,7 +38,7 @@ private:
     bool is_equal(bool* a, bool* b);
 public:
     NumericRepresentation(int bit_size,
-                          uint8_t* pins);
+                          int* pins);
     bool update();
     String get_value(base type);
     void read_bytes_from_ic();
