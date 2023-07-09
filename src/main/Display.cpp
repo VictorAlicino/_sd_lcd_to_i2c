@@ -10,7 +10,7 @@ Display::Display(){
     this->display->init();
     this->display->backlight();
     this->display->setCursor(0, 0);
-    this->display->print("Loading...");
+    this->display->print("Habib S2");
 }
 
 void Display::show_operation(NumericRepresentation opA,
