@@ -15,13 +15,17 @@ Display::Display(){
 
 void Display::show_operation(NumericRepresentation opA,
                              NumericRepresentation opB,
-                             NumericRepresentation result) {
+                             NumericRepresentation result,
+                             NumericRepresentation counter) {
 
     this->display->clear();
 
     this->display->setCursor(0, 0);
+    this->display->print("[");
+    this->display->print(counter.get_value(DECIMAL));
+    this->display->print("]  ");
     this->display->print(opA.get_value(DECIMAL));
-    this->display->print("*");
+    this->display->print("+");
     this->display->print(opB.get_value(DECIMAL));
     this->display->print("=");
     this->display->print(result.get_value(DECIMAL));

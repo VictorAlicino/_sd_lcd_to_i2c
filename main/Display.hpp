@@ -6,7 +6,7 @@
 #define _SD_LCD_TO_I2C_DISPLAY_H
 
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#include "LiquidCrystal_I2C.h"
 #include "NumericRepresentation.hpp"
 
 class Display {
@@ -15,7 +15,11 @@ private:
 
 public:
     Display();
-    void show_operation(NumericRepresentation opA, NumericRepresentation opB, NumericRepresentation result);
+    void show_operation(
+        NumericRepresentation opA, 
+        NumericRepresentation opB, 
+        NumericRepresentation result,
+        NumericRepresentation counter);
     void show_result(NumericRepresentation result);
 
 };
